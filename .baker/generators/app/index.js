@@ -35,6 +35,12 @@ module.exports = BaseGenerator.extend({
   },
 
   writing: {
+    appPackageJSON() {
+      this.template('package.json.hbs', `${this.appDirectory}/package.json`, {
+        applicationName: this.applicationName,
+      });
+    },
+
     serverFiles() {
       this.bulkDirectory('server', this.serverDirectory);
     },
@@ -62,6 +68,7 @@ module.exports = BaseGenerator.extend({
       });
     },
 
+    // We need to rewrite package.json to overwrite react init default one
     appPackageJSON() {
       this.template('package.json.hbs', `${this.appDirectory}/package.json`, {
         applicationName: this.applicationName,
