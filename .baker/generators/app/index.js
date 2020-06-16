@@ -35,12 +35,6 @@ module.exports = BaseGenerator.extend({
   },
 
   writing: {
-    appPackageJSON() {
-      this.template('package.json.hbs', `${this.appDirectory}/package.json`, {
-        applicationName: this.applicationName,
-      });
-    },
-
     serverFiles() {
       this.bulkDirectory('server', this.serverDirectory);
     },
@@ -65,6 +59,12 @@ module.exports = BaseGenerator.extend({
 
       execSync(command, {
         cwd: this.destinationPath(this.serverDirectory),
+      });
+    },
+
+    appPackageJSON() {
+      this.template('package.json.hbs', `${this.appDirectory}/package.json`, {
+        applicationName: this.applicationName,
       });
     },
   },
