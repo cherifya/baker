@@ -52,11 +52,8 @@ module.exports = BaseGenerator.extend({
 
   install: {
     installAppDepsAndRunRNSetup() {
-      const command = which('yarnpkg') ? 'yarnpkg install' : 'npm install';
+      this._runYarnInstall();
 
-      execSync(command, {
-        cwd: this.destinationPath(this.appDirectory),
-      });
       this._initRN();
 
       if (this.originalDestination !== this.destinationPath('.')) {
@@ -132,6 +129,9 @@ module.exports = BaseGenerator.extend({
 
     // Remove generated __tests__ directory from the root of RN project
     rm('-rf', this.destinationPath(`${this.appDirectory}/__tests__`));
+
+    // Run a final yarn install to catch the overwritten package.json
+    this._runYarnInstall();
   },
 
   _checkIfRNIsInstalled() {
@@ -144,6 +144,14 @@ module.exports = BaseGenerator.extend({
       this.destinationRoot('app'),
       this.applicationName,
     ]);
+  },
+
+  _runYarnInstall() {
+    const command = which('yarn') ? 'yarn install' : 'npm install';
+
+    execSync(command, {
+      cwd: this.destinationPath(this.appDirectory),
+    });
   },
 
   _currentDirectoryHasRNApp() {
