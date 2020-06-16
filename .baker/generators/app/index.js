@@ -52,7 +52,7 @@ module.exports = BaseGenerator.extend({
 
   install: {
     installAppDepsAndRunRNSetup() {
-      this._runYarnInstall();
+      this._runYarnInstall(this.destinationPath(this.appDirectory));
 
       this._initRN();
 
@@ -60,9 +60,7 @@ module.exports = BaseGenerator.extend({
         this.destinationRoot(this.originalDestination);
       }
 
-      execSync(command, {
-        cwd: this.destinationPath(this.serverDirectory),
-      });
+      this._runYarnInstall(this.destinationPath(this.serverDirectory));
     },
 
     // We need to rewrite package.json to overwrite react init default one
@@ -131,7 +129,7 @@ module.exports = BaseGenerator.extend({
     rm('-rf', this.destinationPath(`${this.appDirectory}/__tests__`));
 
     // Run a final yarn install to catch the overwritten package.json
-    this._runYarnInstall();
+    this._runYarnInstall(this.destinationPath(this.appDirectory));
   },
 
   _checkIfRNIsInstalled() {
@@ -146,11 +144,11 @@ module.exports = BaseGenerator.extend({
     ]);
   },
 
-  _runYarnInstall() {
+  _runYarnInstall(workingdirectory) {
     const command = which('yarn') ? 'yarn install' : 'npm install';
 
     execSync(command, {
-      cwd: this.destinationPath(this.appDirectory),
+      cwd: workingdirectory,
     });
   },
 
