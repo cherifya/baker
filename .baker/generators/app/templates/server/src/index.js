@@ -23,7 +23,7 @@ const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 const serverPort = process.env.PORT || settings.serverPort;
 
 parseServer.setup(app, packageJSON.name, settings);
-graphql.setup(app, IS_DEVELOPMENT);
+graphql.setup(app, settings, IS_DEVELOPMENT);
 
 app.listen(serverPort, () => {
   // eslint-disable-next-line no-console

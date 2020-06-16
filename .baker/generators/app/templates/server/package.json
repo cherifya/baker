@@ -19,7 +19,7 @@
     "parse": "1.9.2",
     "parse-dashboard": "^1.0.13",
     "parse-graphql-client": "^0.2.0",
-    "parse-graphql-server": "^0.3.0",
+    "parse-graphql-server": "https://github.com/cherifya/parse-graphql-server.git",
     "parse-server": "^2.2.25-beta.1"
   },
   "devDependencies": {
