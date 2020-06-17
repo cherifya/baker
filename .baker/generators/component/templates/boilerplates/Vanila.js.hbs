@@ -1,14 +1,121 @@
+import { Image, ActivityIndicator } from "react-native";
+import { AppLoading } from "expo";
+import { useFonts } from '@use-expo/font';
+import { Asset } from "expo-asset";
+import { Block, GalioProvider} from "galio-framework";
+import { NavigationContainer } from "@react-navigation/native";
 
-const { View, Text } = ReactNative;
+// Load all fonts required
+import Feather from 'react-native-vector-icons/Feather';
+import MyFontAwesome from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+Feather.loadFont();
+MyFontAwesome.loadFont();
+Entypo.loadFont();
+MaterialIcons.loadFont();
+FontAwesome5.getStyledIconSet('brand').loadFont();
+FontAwesome5.getStyledIconSet('light').loadFont();
+FontAwesome5.getStyledIconSet('regular').loadFont();
+FontAwesome5.getStyledIconSet('solid').loadFont();
 
-{{> declareComponent}} {
-  render() {
+
+// Before rendering any navigation stack
+import { enableScreens } from "react-native-screens";
+enableScreens();
+
+import Screens from "../../navigation/Screens";
+import { Images } from "../../screens/constants";
+import theme from "../../screens/theme";
+
+// cache app images
+const assetImages = [
+  Images.Onboarding,
+  Images.LogoOnboarding,
+  Images.Logo,
+  Images.Pro,
+  Images.ArgonLogo,
+  Images.iOSLogo,
+  Images.androidLogo
+];
+
+// cache product images
+const articles = [
+  {
+    title: 'Ice cream is made with carrageenan …',
+    image: 'https://images.unsplash.com/photo-1516559828984-fb3b99548b21?ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80',
+    cta: 'View article', 
+    horizontal: true
+  },
+  {
+    title: 'Is makeup one of your daily esse …',
+    image: 'https://images.unsplash.com/photo-1519368358672-25b03afee3bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2004&q=80',
+    cta: 'View article'
+  },
+  {
+    title: 'Coffee is more than just a drink: It’s …',
+    image: 'https://images.unsplash.com/photo-1500522144261-ea64433bbe27?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2102&q=80',
+    cta: 'View article' 
+  },
+  {
+    title: 'Fashion is a popular style, especially in …',
+    image: 'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1326&q=80',
+    cta: 'View article' 
+  },
+  {
+    title: 'Argon is a great free UI packag …',
+    image: 'https://images.unsplash.com/photo-1482686115713-0fbcaced6e28?fit=crop&w=1947&q=80',
+    cta: 'View article', 
+    horizontal: true
+  },
+];
+articles.map(article => assetImages.push(article.image));
+
+function cacheImages(images) {
+  return images.map(image => {
+    if (typeof image === "string") {
+      return Image.prefetch(image);
+    } else {
+      return Asset.fromModule(image).downloadAsync();
+    }
+  });
+}
+
+export default props => {
+  const [isLoadingComplete, setLoading] = useState(false);
+  let [fontsLoaded] = useFonts({
+    'ArgonExtra': require('../../../assets/fonts/argon.ttf'),
+  });
+
+  function _loadResourcesAsync() {
+    return Promise.all([...cacheImages(assetImages)]);
+  }
+
+  function _handleLoadingError(error) {
+    // In this case, you might want to report the error to your error
+    // reporting service, for example Sentry
+    console.warn(error);
+  };
+
+ function _handleFinishLoading() {
+    setLoading(true);
+  };
+
+  if(!fontsLoaded && !isLoadingComplete) {
     return (
-      <View style={styles.container}>
-        <Text>{{componentName}}</Text>
-      </View>
+      <ActivityIndicator
+      />
+    );
+  } else if(fontsLoaded) {
+    return (
+      <NavigationContainer>
+        <GalioProvider theme={theme}>
+          <Block flex>
+            <Screens />
+          </Block>
+        </GalioProvider>
+      </NavigationContainer>
     );
   }
 }
-
-{{> mapDispatchAndPropsAndConnect }}

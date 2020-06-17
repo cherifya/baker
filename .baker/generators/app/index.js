@@ -64,11 +64,13 @@ module.exports = BaseGenerator.extend({
     },
 
     // We need to rewrite package.json to overwrite react init default one
+    /*
     appPackageJSON() {
       this.template('package.json.hbs', `${this.appDirectory}/package.json`, {
         applicationName: this.applicationName,
       });
     },
+    */
   },
 
   end() {
@@ -129,7 +131,7 @@ module.exports = BaseGenerator.extend({
     rm('-rf', this.destinationPath(`${this.appDirectory}/__tests__`));
 
     // Run a final yarn install to catch the overwritten package.json
-    this._runYarnInstall(this.destinationPath(this.appDirectory));
+    //this._runYarnInstall(this.destinationPath(this.appDirectory));
   },
 
   _checkIfRNIsInstalled() {
@@ -140,7 +142,11 @@ module.exports = BaseGenerator.extend({
     this.spawnCommandSync('node', [
       this.templatePath('setup-rn.js'),
       this.destinationRoot('app'),
-      this.applicationName,
+      [
+        this.applicationName,
+        '--template',
+        'react-native-template-moule'
+      ]
     ]);
   },
 
