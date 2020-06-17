@@ -142,11 +142,7 @@ module.exports = BaseGenerator.extend({
     this.spawnCommandSync('node', [
       this.templatePath('setup-rn.js'),
       this.destinationRoot('app'),
-      [
-        this.applicationName,
-        '--template',
-        'react-native-template-moule'
-      ]
+      this.applicationName,
     ]);
   },
 
