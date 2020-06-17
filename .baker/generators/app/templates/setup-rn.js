@@ -23,8 +23,8 @@ cli.init(process.argv[2], process.argv[3]);
 const { spawn } = require("child_process");
 
 spawn('/usr/local/bin/npx', [
-  this.templatePath('react-native'),
-  this.destinationRoot('init'),
+  'react-native',
+  'init',
   process.argv[3],
   '--directory',
   process.argv[2],
