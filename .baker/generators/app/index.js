@@ -35,25 +35,15 @@ module.exports = BaseGenerator.extend({
   },
 
   writing: {
-    appPackageJSON() {
-      this.template('package.json.hbs', `${this.appDirectory}/package.json`, {
-        applicationName: this.applicationName,
-      });
-    },
-
     serverFiles() {
       this.bulkDirectory('server', this.serverDirectory);
-    },
-
-    assetsDirectory() {
-      this.bulkDirectory('assets', `${this.appDirectory}/assets`);
     },
   },
 
   install: {
+    // react-native init needs to run before app folder is created
+    // otherwise it bails
     installAppDepsAndRunRNSetup() {
-      this._runYarnInstall(this.destinationPath(this.appDirectory));
-
       this._initRN();
 
       if (this.originalDestination !== this.destinationPath('.')) {
@@ -63,14 +53,15 @@ module.exports = BaseGenerator.extend({
       this._runYarnInstall(this.destinationPath(this.serverDirectory));
     },
 
-    // We need to rewrite package.json to overwrite react init default one
-    /*
     appPackageJSON() {
       this.template('package.json.hbs', `${this.appDirectory}/package.json`, {
         applicationName: this.applicationName,
       });
     },
-    */
+
+    assetsDirectory() {
+      this.bulkDirectory('assets', `${this.appDirectory}/assets`);
+    },
   },
 
   end() {
@@ -131,7 +122,7 @@ module.exports = BaseGenerator.extend({
     rm('-rf', this.destinationPath(`${this.appDirectory}/__tests__`));
 
     // Run a final yarn install to catch the overwritten package.json
-    //this._runYarnInstall(this.destinationPath(this.appDirectory));
+    this._runYarnInstall(this.destinationPath(this.appDirectory));
   },
 
   _checkIfRNIsInstalled() {
@@ -139,10 +130,15 @@ module.exports = BaseGenerator.extend({
   },
 
   _initRN() {
-    this.spawnCommandSync('node', [
-      this.templatePath('setup-rn.js'),
-      this.destinationRoot('app'),
+    this.log('Initializing React Native app to ' + this.destinationPath('app'));
+    this.spawnCommandSync('/usr/local/bin/npx', [
+      'react-native',
+      'init',
       this.applicationName,
+      '--directory',
+      this.destinationPath('app'),
+      '--template',
+      'react-native-template-moule'
     ]);
   },
 
